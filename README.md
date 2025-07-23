@@ -16,9 +16,11 @@
 ### 第一阶段 - 静态页面展示 🎯
 - [x] 项目初始化和环境搭建
 - [x] 创建Flask基础应用结构
-- [ ] 设计HTML模板，展示前20条交通数据
-- [ ] 实现基本的路由和视图函数
+- [x] 数据库连接模块开发
+- [ ] 连接数据库，展示前20条交通数据
+- [ ] 设计HTML模板
 - [ ] 创建简洁的CSS样式
+- [ ] 实现基本的路由和视图函数
 
 ### 第二阶段 - 动态页面功能 🚀
 - [ ] 实现数据分页查询功能
@@ -50,19 +52,19 @@
 ├── requirements.txt        # 项目依赖包
 ├── utils/                  # 工具函数模块
 │   ├── __init__.py         
-│   ├── data_handler.py     # 数据处理和读取
-│   ├── search_engine.py    # 搜索算法实现
-│   └── chart_generator.py  # 图表生成工具
-├── templates/              # Jinja2模板文件
-│   ├── base.html           # 基础模板
-│   ├── index.html          # 首页模板
-│   ├── search.html         # 搜索页面
-│   └── results.html        # 结果展示页面
-├── static/                 # 静态资源文件
+│   ├── database.py         # 数据库连接和操作模块
+│   ├── search_engine.py    # 搜索算法实现（待开发）
+│   └── chart_generator.py  # 图表生成工具（待开发）
+├── templates/              # Jinja2模板文件（待创建）
+│   ├── base.html           # 基础模板（待创建）
+│   ├── index.html          # 首页模板（待创建）
+│   ├── search.html         # 搜索页面（待创建）
+│   └── results.html        # 结果展示页面（待创建）
+├── static/                 # 静态资源文件（待创建）
 │   ├── css/                
-│   │   └── style.css       # 样式文件
+│   │   └── style.css       # 样式文件（待创建）
 │   ├── js/                 
-│   │   └── main.js         # JavaScript脚本
+│   │   └── main.js         # JavaScript脚本（待创建）
 │   └── images/             # 图片资源
 ├── data/                   # 数据文件目录
 │   └── traffic.db          # 交通流量数据库文件
@@ -154,21 +156,24 @@ GET /api/export?format=csv&search_params=...
 ```
 
 ## 数据格式说明
-系统支持的CSV数据格式：
-```csv
-timestamp,plate_number,direction,location,speed,vehicle_type
-2024-01-01 08:00:00,粤A12345,北向,路口A,45.5,小型车
-2024-01-01 08:01:00,粤B67890,南向,路口B,52.0,大型车
-2024-01-01 08:02:00,京C11111,东向,路口C,38.2,小型车
+系统使用SQLite数据库存储交通数据：
+
+### 数据库结构
+```sql
+表名: traffic
+列信息:
+- id (INTEGER)       - 主键ID
+- direction (INTEGER) - 方向编码 (1:北向, 2:南向, 3:东向, 4:西向)
+- time (REAL)        - Unix时间戳
+- plate (TEXT)       - 车牌号码
 ```
 
-### 字段说明
-- `timestamp`: 记录时间 (YYYY-MM-DD HH:MM:SS)
-- `plate_number`: 车牌号码
-- `direction`: 行驶方向 (北向/南向/东向/西向)
-- `location`: 记录位置
-- `speed`: 车辆速度 (km/h)
-- `vehicle_type`: 车辆类型 (小型车/大型车/摩托车等)
+### 数据示例
+```
+记录 1: {'id': 1, 'direction': 3, 'time': 1712126348.632, 'plate': 'AF5B7CEM'}
+记录 2: {'id': 2, 'direction': 1, 'time': 1712137532.316, 'plate': 'BK2IA84'}
+记录 3: {'id': 3, 'direction': 3, 'time': 1712128144.087, 'plate': 'AF4EC7FK'}
+```
 
 ## 技术栈
 - **后端框架**: Flask 2.3+ (轻量级、灵活的Web框架)
@@ -176,7 +181,7 @@ timestamp,plate_number,direction,location,speed,vehicle_type
 - **数据处理**: Pandas (数据分析和CSV处理)
 - **数据可视化**: Plotly + Chart.js (交互式图表)
 - **前端技术**: HTML5 + CSS3 + JavaScript + Bootstrap
-- **数据存储**: CSV文件 (可扩展到SQLite/MySQL)
+- **数据存储**: SQLite数据库
 - **测试框架**: pytest + Flask-Testing
 
 ## 开发指南
@@ -189,13 +194,23 @@ timestamp,plate_number,direction,location,speed,vehicle_type
 5. 编写对应的测试用例
 
 ## 版本信息
-- **当前版本**: v0.1.0
-- **Python版本**: 3.8+
+- **当前版本**: v0.2.0
+- **Python版本**: 3.12.6
 - **Flask版本**: 2.3+
 - **创建日期**: 2025年7月23日
 - **最后更新**: 2025年7月23日
 
 ## 更新日志
+
+### v0.2.0 (2025-07-23)
+- ✅ 完成Flask基础应用结构开发
+- ✅ 创建数据库连接模块 (utils/database.py)
+- ✅ 实现SQLite数据库读取功能
+- ✅ 建立Git版本控制和GitHub远程仓库
+- ✅ 完善项目文档和README
+- 🔧 支持交通数据库的连接、查询和管理
+- 📊 成功读取traffic表中的交通记录数据
+
 ### v0.1.0 (2025-07-23)
 - 🎉 项目初始化，确定技术栈
 - 📋 完成项目规划和分阶段目标
