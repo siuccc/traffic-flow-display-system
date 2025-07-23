@@ -2,6 +2,12 @@
 instance/
 .webassets-cache
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+
 # Environment variables
 .env
 .venv
