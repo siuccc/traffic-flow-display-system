@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+# pytest基本配置
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",                # 详细输出
+    "--tb=short",        # 简洁的错误追踪
+    "--color=yes"        # 彩色输出
+]

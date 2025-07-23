@@ -1,0 +1,35 @@
+# Flask交通流量数据展示系统依赖包
+
+# Flask核心框架
+Flask>=2.3.0
+Jinja2>=3.1.0              # 模板引擎
+Werkzeug>=2.3.0            # WSGI工具库
+
+# Flask扩展
+Flask-WTF>=1.1.0           # 表单处理和CSRF保护
+WTForms>=3.0.0             # 表单验证
+Flask-Caching>=2.0.0       # 缓存支持
+
+# 数据处理
+pandas>=2.0.0              # 数据分析和处理
+numpy>=1.24.0              # 数值计算
+
+# 数据可视化
+plotly>=5.0.0              # 交互式图表
+matplotlib>=3.6.0          # 基础图表库
+
+# 开发和测试工具
+pytest>=7.0.0
+pytest-flask>=1.2.0       # Flask测试工具
+pytest-cov>=4.0.0         # 测试覆盖率
+black>=22.0.0              # 代码格式化
+flake8>=5.0.0             # 代码质量检查
+
+# 生产环境工具
+gunicorn>=20.1.0          # WSGI HTTP服务器
+python-dotenv>=1.0.0      # 环境变量管理
+
+# 可选依赖（用于扩展功能）
+# redis>=4.5.0            # 缓存和会话存储
+# celery>=5.2.0           # 异步任务队列
+# requests>=2.28.0        # HTTP请求库
