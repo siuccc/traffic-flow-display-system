@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}交通流量数据展示系统{% endblock %}</title>
+    
+    <!-- 基础样式 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面头部 -->
+    <header>
+        <h1>🚗 交通流量数据展示系统</h1>
+        <nav>
+            <a href="/">首页</a>
+        </nav>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main>
+        {% block content %}
+        <!-- 子页面内容将在这里显示 -->
+        {% endblock %}
+    </main>
+
+    <!-- 页面底部 -->
+    <footer>
+        <p>&copy; 2025 交通流量数据展示系统</p>
+    </footer>
+</body>
+</html>

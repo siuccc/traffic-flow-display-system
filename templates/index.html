@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 交通流量数据展示系统{% endblock %}
+
+{% block content %}
+<!-- 页面主要内容 -->
+<div class="content-wrapper">
+    <!-- 数据统计信息 -->
+    <div class="info-section">
+        <h2>📊 交通数据概览</h2>
+        <p>显示最新 <strong>{{ record_count }}</strong> 条交通记录</p>
+        <p>数据更新时间：<span id="update-time">{{ update_time }}</span></p>
+    </div>
+
+    <!-- 交通数据表格 -->
+    <div class="table-section">
+        <h3>🚗 交通记录列表</h3>
+        
+        {% if traffic_records %}
+        <table class="traffic-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>方向</th>
+                    <th>通过时间</th>
+                    <th>车牌号</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in traffic_records %}
+                <tr>
+                    <td class="center">{{ record.id }}</td>
+                    <td class="center direction-{{ record.direction }}">{{ record.direction_text }}</td>
+                    <td class="time">{{ record.formatted_time }}</td>
+                    <td class="center plate">{{ record.plate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <p>❌ 暂无交通数据</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 状态信息 -->
+    <div class="status-section">
+        <p class="status-ok">✅ 数据库连接正常，交通流量数据展示功能已启用</p>
+    </div>
+</div>
+{% endblock %}
