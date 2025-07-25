@@ -8,8 +8,6 @@
     <!-- 数据统计信息 -->
     <div class="info-section">
         <h2>📊 交通数据概览</h2>
-        <p>显示最新 <strong>{{ record_count }}</strong> 条交通记录</p>
-        <p>数据更新时间：<span id="update-time">{{ update_time }}</span></p>
     </div>
 
     <!-- 交通数据表格 -->
@@ -37,16 +35,73 @@
                 {% endfor %}
             </tbody>
         </table>
+        
+        <!-- 分页导航 -->
+        <div class="pagination">
+            <!-- 上一页按钮 -->
+            {% if has_prev %}
+                <a href="?page={{ prev_page }}" class="page-btn prev-btn">
+                    ⬅️ 上一页
+                </a>
+            {% else %}
+                <span class="page-btn prev-btn disabled">
+                    ⬅️ 上一页
+                </span>
+            {% endif %}
+            
+            <!-- 页码显示 -->
+            <div class="page-numbers">
+                {% if current_page > 3 %}
+                    <a href="?page=1" class="page-num">1</a>
+                    {% if current_page > 4 %}
+                        <span class="page-dots">...</span>
+                    {% endif %}
+                {% endif %}
+                
+                {% for page_num in range([current_page - 2, 1]|max, [current_page + 3, total_pages + 1]|min) %}
+                    {% if page_num == current_page %}
+                        <span class="page-num current">{{ page_num }}</span>
+                    {% else %}
+                        <a href="?page={{ page_num }}" class="page-num">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if current_page < total_pages - 2 %}
+                    {% if current_page < total_pages - 3 %}
+                        <span class="page-dots">...</span>
+                    {% endif %}
+                    <a href="?page={{ total_pages }}" class="page-num">{{ total_pages }}</a>
+                {% endif %}
+            </div>
+            
+            <!-- 页码跳转输入框 -->
+            <div class="page-jump">
+                <span class="jump-label">跳转到</span>
+                <input type="number" id="pageInput" class="page-input" min="1" max="{{ total_pages }}" placeholder="{{ current_page }}">
+                <button onclick="jumpToPage()" class="jump-btn">GO</button>
+            </div>
+            
+            <!-- 下一页按钮 -->
+            {% if has_next %}
+                <a href="?page={{ next_page }}" class="page-btn next-btn">
+                    下一页 ➡️
+                </a>
+            {% else %}
+                <span class="page-btn next-btn disabled">
+                    下一页 ➡️
+                </span>
+            {% endif %}
+        </div>
+        
         {% else %}
         <div class="no-data">
             <p>❌ 暂无交通数据</p>
         </div>
         {% endif %}
     </div>
-
-    <!-- 状态信息 -->
-    <div class="status-section">
-        <p class="status-ok">✅ 数据库连接正常，交通流量数据展示功能已启用</p>
-    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,265 @@
+/* 
+ * 交通流量数据展示系统 - 主样式文件
+ * 专为桌面端设计的现代化界面
+ */
+
+/* ==================== 全局基础样式 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+/* ==================== 头部样式 ==================== */
+header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+nav a {
+    color: #e52a53;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background: #e3f2fd;
+    color: #e75a1869;
+    transform: translateY(-1px);
+}
+
+/* ==================== 主要内容区域 ==================== */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.content-wrapper {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* ==================== 信息统计区域 ==================== */
+.info-section {
+    background: linear-gradient(135deg, #a8d5e5 30%, #e8f4f8 70%);
+    color: #2c3e50;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid rgba(168, 213, 229, 0.3);
+    box-shadow: 0 4px 15px rgba(168, 213, 229, 0.2);
+}
+
+.info-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+.info-section strong {
+    color: #1976d2;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+
+/* ==================== 表格区域样式 ==================== */
+.table-section {
+    margin-bottom: 2rem;
+}
+
+.table-section h3 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 4px solid #1bd0ac;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(195, 207, 226, 0.3);
+}
+
+table th {
+    background: linear-gradient(135deg, rgba(195, 207, 226, 0.8), rgba(245, 247, 250, 0.9));
+    font-weight: 600;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9em;
+}
+
+/* 表格行悬停效果 */
+table tbody tr {
+    transition: all 0.3s ease;
+}
+
+table tbody tr:hover {
+    background: rgba(195, 207, 226, 0.2);
+    transform: translateY(-1px);
+}
+
+/* ==================== 分页相关样式 ==================== */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+}
+
+.page-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #a8d5e5, #e8f4f8);
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(168, 213, 229, 0.3);
+}
+
+.page-btn:hover {
+    background: linear-gradient(135deg, #8cc5d9, #d4e8f0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 213, 229, 0.3);
+}
+
+.page-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f5f5f5;
+    color: #999;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin: 0 1rem;
+}
+
+.page-num {
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(195, 207, 226, 0.3);
+    min-width: 40px;
+    text-align: center;
+}
+
+.page-num:hover {
+    background: rgba(168, 213, 229, 0.2);
+    transform: translateY(-1px);
+}
+
+.page-num.current {
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    color: white;
+    font-weight: 600;
+    cursor: default;
+}
+
+.page-dots {
+    padding: 0 0.5rem;
+    color: #666;
+    font-weight: bold;
+}
+
+/* 页码跳转功能样式 */
+.page-jump {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    border: 1px solid rgba(195, 207, 226, 0.3);
+}
+
+.jump-label {
+    font-size: 0.9rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.page-input {
+    width: 80px;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid rgba(195, 207, 226, 0.5);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.page-input:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.jump-btn {
+    padding: 0.4rem 0.8rem;
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.jump-btn:hover {
+    background: linear-gradient(135deg, #1565c0, #1976d2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
