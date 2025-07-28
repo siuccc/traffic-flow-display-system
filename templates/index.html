@@ -10,6 +10,66 @@
         <h2>📊 交通数据概览</h2>
     </div>
 
+    <!-- 搜索功能区域 -->
+    <div class="search-section">
+        <h3>搜索</h3>
+        <form method="GET" class="search-form">
+            <div class="search-controls">
+                <!-- 时间段选择器 -->
+                <div class="input-group">
+                    <select name="time_range" 
+                            id="timeRangeSelect" 
+                            class="search-input">
+                        <option value="" {% if not time_search %}selected{% endif %}>全部时间</option>
+                        <option value="morning" {% if time_search == 'morning' %}selected{% endif %}>早高峰 (07:00-09:00)</option>
+                        <option value="noon" {% if time_search == 'noon' %}selected{% endif %}>中午时段 (11:00-13:00)</option>
+                        <option value="afternoon" {% if time_search == 'afternoon' %}selected{% endif %}>下午时段 (14:00-17:00)</option>
+                        <option value="evening" {% if time_search == 'evening' %}selected{% endif %}>晚高峰 (17:00-19:00)</option>
+                        <option value="night" {% if time_search == 'night' %}selected{% endif %}>夜间时段 (20:00-06:00)</option>
+                    </select>
+                    <label for="timeRangeSelect" class="input-label">时间段</label>
+                </div>
+                
+                <!-- 方向选择框 -->
+                <div class="input-group">
+                    <select name="direction" 
+                            id="directionSelect" 
+                            class="search-input">
+                        <option value="" {% if not direction_search %}selected{% endif %}>全部方向</option>
+                        <option value="1" {% if direction_search == '1' %}selected{% endif %}>北往南</option>
+                        <option value="2" {% if direction_search == '2' %}selected{% endif %}>南往北</option>
+                        <option value="3" {% if direction_search == '3' %}selected{% endif %}>东往西</option>
+                        <option value="4" {% if direction_search == '4' %}selected{% endif %}>西往东</option>
+                    </select>
+                    <label for="directionSelect" class="input-label">行驶方向</label>
+                </div>
+                
+                <!-- 搜索按钮组 -->
+                <div class="button-group">
+                    <button type="submit" class="search-btn">
+                        🔍 搜索
+                    </button>
+                    <a href="/" class="clear-btn">
+                        🗑️ 清空
+                    </a>
+                </div>
+            </div>
+        </form>
+        
+        <!-- 搜索状态显示 -->
+        <div class="search-status">
+            {% if time_search or direction_search %}
+                <span class="status-text">
+                    🎯 {{ search_info }} - 找到 <strong>{{ total_records }}</strong> 条记录
+                </span>
+            {% else %}
+                <span class="status-text">
+                    📋 {{ search_info }} - 共 <strong>{{ total_records }}</strong> 条记录
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
     <!-- 交通数据表格 -->
     <div class="table-section">
         <h3>🚗 交通记录列表</h3>
@@ -40,7 +100,7 @@
         <div class="pagination">
             <!-- 上一页按钮 -->
             {% if has_prev %}
-                <a href="?page={{ prev_page }}" class="page-btn prev-btn">
+                <a href="?{% if time_search %}time_range={{ time_search }}&{% endif %}{% if direction_search %}direction={{ direction_search }}&{% endif %}page={{ prev_page }}" class="page-btn prev-btn">
                     ⬅️ 上一页
                 </a>
             {% else %}
@@ -52,7 +112,7 @@
             <!-- 页码显示 -->
             <div class="page-numbers">
                 {% if current_page > 3 %}
-                    <a href="?page=1" class="page-num">1</a>
+                    <a href="?{% if time_search %}time_range={{ time_search }}&{% endif %}{% if direction_search %}direction={{ direction_search }}&{% endif %}page=1" class="page-num">1</a>
                     {% if current_page > 4 %}
                         <span class="page-dots">...</span>
                     {% endif %}
@@ -62,7 +122,7 @@
                     {% if page_num == current_page %}
                         <span class="page-num current">{{ page_num }}</span>
                     {% else %}
-                        <a href="?page={{ page_num }}" class="page-num">{{ page_num }}</a>
+                        <a href="?{% if time_search %}time_range={{ time_search }}&{% endif %}{% if direction_search %}direction={{ direction_search }}&{% endif %}page={{ page_num }}" class="page-num">{{ page_num }}</a>
                     {% endif %}
                 {% endfor %}
                 
@@ -70,7 +130,7 @@
                     {% if current_page < total_pages - 3 %}
                         <span class="page-dots">...</span>
                     {% endif %}
-                    <a href="?page={{ total_pages }}" class="page-num">{{ total_pages }}</a>
+                    <a href="?{% if time_search %}time_range={{ time_search }}&{% endif %}{% if direction_search %}direction={{ direction_search }}&{% endif %}page={{ total_pages }}" class="page-num">{{ total_pages }}</a>
                 {% endif %}
             </div>
             
@@ -83,7 +143,7 @@
             
             <!-- 下一页按钮 -->
             {% if has_next %}
-                <a href="?page={{ next_page }}" class="page-btn next-btn">
+                <a href="?{% if time_search %}time_range={{ time_search }}&{% endif %}{% if direction_search %}direction={{ direction_search }}&{% endif %}page={{ next_page }}" class="page-btn next-btn">
                     下一页 ➡️
                 </a>
             {% else %}

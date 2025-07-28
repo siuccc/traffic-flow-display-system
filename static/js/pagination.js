@@ -16,8 +16,15 @@ function jumpToPage() {
         return;
     }
     
-    // 跳转到目标页
-    window.location.href = '/?page=' + page;
+    // 获取当前URL的搜索参数
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 设置页码参数
+    urlParams.set('page', page);
+    
+    // 构建新的URL并跳转
+    const newUrl = window.location.pathname + '?' + urlParams.toString();
+    window.location.href = newUrl;
 }
 
 // 页面加载完成后初始化

@@ -89,6 +89,174 @@ main {
     font-weight: 700;
 }
 
+/* ==================== 搜索区域样式 ==================== */
+.search-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.1);
+}
+
+.search-section h3 {
+    color: #1976d2;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-form {
+    margin-bottom: 1rem;
+}
+
+.search-controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e3f2fd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2196f3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+/* Select 下拉框特殊样式 */
+select.search-input {
+    /* 为 select 元素添加特殊样式 */
+    appearance: none; /* 移除默认下拉箭头 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    background-color: white;
+    cursor: pointer;
+    padding-right: 2.5rem; /* 为箭头留出空间 */
+}
+
+select.search-input:hover {
+    border-color: #90caf9;
+    background-color: #f8f9ff;
+}
+
+select.search-input:focus {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%232196f3" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+}
+
+/* Select 选项样式 */
+select.search-input option {
+    padding: 0.5rem;
+    background: white;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+select.search-input option:hover {
+    background: #e3f2fd;
+}
+
+select.search-input option:checked {
+    background: #2196f3;
+    color: white;
+}
+
+.input-label {
+    position: absolute;
+    left: 1rem;
+    top: -0.7rem;
+    background: white;
+    color: #666;
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+    border-radius: 4px;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+}
+
+.clear-btn {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.clear-btn:hover {
+    background: linear-gradient(135deg, #e8e8e8 0%, #ddd 100%);
+    transform: translateY(-1px);
+}
+
+.search-status {
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    border-left: 4px solid #4caf50;
+}
+
+.status-text {
+    color: #2c3e50;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.status-text strong {
+    color: #1976d2;
+    font-weight: 700;
+}
+
 
 /* ==================== 表格区域样式 ==================== */
 .table-section {
