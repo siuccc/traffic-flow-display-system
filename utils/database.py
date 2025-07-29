@@ -101,72 +101,6 @@ class TrafficDatabase:
             print(f"❌ 分页查询失败: {e}")
             return [], 0, 0
     
-    def search_by_plate(self, plate_keyword: str, page: int = 1, per_page: int = 20) -> tuple:
-        """
-        根据车牌号关键字搜索记录（支持模糊搜索和分页）
-        
-        Args:
-            plate_keyword: 车牌号关键字（支持部分匹配）
-            page: 页码（从1开始）
-            per_page: 每页记录数，默认20
-            
-        Returns:
-            tuple: (记录列表, 总记录数, 总页数)
-        """
-        if not self.connection:
-            print("❌ 请先连接数据库")
-            return [], 0, 0
-        
-        # 处理空搜索关键字的情况
-        if not plate_keyword or not plate_keyword.strip():
-            print("⚠️ 搜索关键字为空，返回所有记录")
-            return self.get_paginated_records('traffic', page, per_page)
-        
-        try:
-            cursor = self.connection.cursor()
-            
-            # 清理搜索关键字：去除空格并转为大写（车牌通常是大写）
-            clean_keyword = plate_keyword.strip().upper()
-            
-            # 第1步：获取匹配的总记录数
-            # 使用LIKE进行模糊搜索，%关键字%表示包含关键字的所有记录
-            count_query = """
-                SELECT COUNT(*) FROM traffic 
-                WHERE UPPER(plate) LIKE ?
-            """
-            cursor.execute(count_query, (f'%{clean_keyword}%',))
-            total_records = cursor.fetchone()[0]
-            
-            # 第2步：计算总页数
-            total_pages = (total_records + per_page - 1) // per_page
-            
-            # 如果没有找到匹配记录，直接返回
-            if total_records == 0:
-                return [], 0, 0
-            
-            # 第3步：计算OFFSET（要跳过的记录数）
-            offset = (page - 1) * per_page
-            
-            # 第4步：执行分页搜索查询
-            # 使用相同的LIKE条件进行实际数据查询
-            search_query = """
-                SELECT * FROM traffic 
-                WHERE UPPER(plate) LIKE ?
-                LIMIT ? OFFSET ?
-            """
-            cursor.execute(search_query, (f'%{clean_keyword}%', per_page, offset))
-            
-            # 第5步：将结果转换为字典列表
-            rows = cursor.fetchall()
-            records = [dict(row) for row in rows]
-            
-            print(f"🔍 搜索'{clean_keyword}'找到 {total_records} 条记录")
-            return records, total_records, total_pages
-            
-        except sqlite3.Error as e:
-            print(f"❌ 车牌搜索失败: {e}")
-            return [], 0, 0
-    
     def search_with_filters(self, time_range: str = '', direction_filter: str = '', page: int = 1, per_page: int = 20) -> tuple:
         """
         根据时间段和方向进行组合搜索（支持分页）
@@ -284,6 +218,50 @@ class TrafficDatabase:
         }
         
         return time_conditions.get(time_range, "")
+
+    def get_direction_distribution(self, time_range: Optional[str] = None) -> Dict[int, int]:
+        """
+        获取交通方向分布统计
+        
+        Args:
+            time_range: 时间段筛选 ('morning', 'noon', 'afternoon', 'evening', 'night')
+        
+        Returns:
+            Dict[int, int]: {方向ID: 记录数量}
+        """
+        if not self.connection:
+            print("❌ 请先连接数据库")
+            return {}
+        
+        try:
+            cursor = self.connection.cursor()
+            
+            # 构建查询条件
+            query = "SELECT direction, COUNT(*) as count FROM traffic"
+            params = []
+            
+            # 根据时间段添加WHERE条件
+            if time_range:
+                time_condition = self._get_time_condition(time_range)
+                if time_condition:
+                    query += f" WHERE {time_condition}"
+            
+            query += " GROUP BY direction ORDER BY direction"
+            
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+            
+            # 转换为字典格式
+            direction_stats = {}
+            for row in rows:
+                direction_stats[row[0]] = row[1]
+            
+            print(f"📊 方向分布统计：{direction_stats}")
+            return direction_stats
+            
+        except sqlite3.Error as e:
+            print(f"❌ 查询方向分布失败: {e}")
+            return {}
 
 # 简单的测试函数
 def test_pagination():

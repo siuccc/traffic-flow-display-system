@@ -431,3 +431,32 @@ table tbody tr:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
 }
+
+/* ==================== 图表区域样式 ==================== */
+.chart-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(200, 200, 200, 0.3);
+    overflow: hidden;
+}
+
+.chart-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

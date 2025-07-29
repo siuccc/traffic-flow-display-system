@@ -11,6 +11,8 @@ import sys
 
 # 导入我们自己的数据库模块
 from utils.database import TrafficDatabase
+# 导入图表生成器 (用于单独的图表路由)
+from utils.chart_generator import create_direction_pie_chart
 
 # 创建Flask应用实例
 app = Flask(__name__)
@@ -132,6 +134,22 @@ def index():
         # 下一页页码
         next_page = page + 1 if has_next else None
         
+        # 第8.5步：生成对应的图表
+        try:
+            # 根据用户的搜索条件生成图表
+            chart_html = create_direction_pie_chart(
+                time_range=time_search if time_search and time_search.strip() else None
+            )
+            
+            if DEBUG_LOGS:
+                print(f"📊 为搜索条件生成图表，时间段: '{time_search}', 图表长度: {len(chart_html)} 字符")
+                
+        except Exception as e:
+            # 如果图表生成失败，提供一个错误提示
+            chart_html = f"<div class='alert alert-warning'>📊 图表暂时无法显示: {str(e)}</div>"
+            if DEBUG_LOGS:
+                print(f"❌ 图表生成失败: {e}")
+        
         # 第9步：使用模板渲染页面，传递分页和搜索信息
         return render_template('index.html',
                              traffic_records=traffic_records,
@@ -149,10 +167,36 @@ def index():
                              # 搜索相关信息
                              time_search=time_search,          # 当前时间段搜索
                              direction_search=direction_search, # 当前方向筛选
-                             search_info=search_info)          # 搜索状态描述
+                             search_info=search_info,          # 搜索状态描述
+                             # 图表相关信息
+                             chart_html=chart_html)            # 生成的图表HTML
         
     except Exception as e:
-        return f"<h1> 数据库连接错误</h1><p>错误信息: {str(e)}</p>"
+        return f"<h1>❌ 数据库连接错误</h1><p>错误信息: {str(e)}</p>"
+
+@app.route('/chart')
+def chart():
+    """图表展示页面 - 显示交通方向分布图表"""
+    try:
+        # 第1步：获取URL参数
+        time_range = request.args.get('time_range', '', type=str)
+        
+        if DEBUG_LOGS:
+            print(f"📊 生成图表，时间段: '{time_range}'")
+        
+        # 第2步：生成图表HTML
+        # 使用我们之前测试过的图表生成器
+        chart_html = create_direction_pie_chart(time_range=time_range if time_range else None)
+        
+        if DEBUG_LOGS:
+            print(f"✅ 图表生成成功，HTML长度: {len(chart_html)} 字符")
+        
+        # 第3步：返回图表HTML
+        # 这里我们直接返回HTML，让浏览器显示图表
+        return chart_html
+        
+    except Exception as e:
+        return f"<h1>❌ 图表生成错误</h1><p>错误信息: {str(e)}</p>"
 
 if __name__ == '__main__':
     # 启动Flask应用
