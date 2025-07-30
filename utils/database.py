@@ -219,6 +219,57 @@ class TrafficDatabase:
         
         return time_conditions.get(time_range, "")
 
+    def get_hourly_traffic_trend(self, direction_filter: str = None) -> dict:
+        """
+        获取24小时车流量趋势数据
+        
+        Args:
+            direction_filter: 方向筛选 ('1', '2', '3', '4')
+            
+        Returns:
+            dict: {hour: count} 格式的24小时数据
+        """
+        try:
+            # 构建SQL查询，按小时统计车流量
+            base_query = """
+                SELECT CAST(strftime('%H', datetime(time, 'unixepoch', 'localtime')) AS INTEGER) as hour,
+                       COUNT(*) as count
+                FROM traffic
+            """
+            
+            # 添加方向筛选条件
+            conditions = []
+            params = []
+            
+            if direction_filter and direction_filter.strip():
+                conditions.append("direction = ?")
+                params.append(int(direction_filter))
+            
+            if conditions:
+                base_query += " WHERE " + " AND ".join(conditions)
+            
+            base_query += " GROUP BY hour ORDER BY hour"
+            
+            # 执行查询
+            cursor = self.connection.cursor()
+            cursor.execute(base_query, params)
+            results = cursor.fetchall()
+            
+            # 初始化24小时数据（0-23小时）
+            hourly_data = {hour: 0 for hour in range(24)}
+            
+            # 填充查询结果
+            for row in results:
+                hour, count = row
+                hourly_data[hour] = count
+            
+            print(f"📈 获取24小时趋势数据成功，总计 {sum(hourly_data.values())} 条记录")
+            return hourly_data
+            
+        except sqlite3.Error as e:
+            print(f"❌ 获取时间趋势数据失败: {e}")
+            return {hour: 0 for hour in range(24)}
+
     def get_direction_distribution(self, time_range: Optional[str] = None) -> Dict[int, int]:
         """
         获取交通方向分布统计

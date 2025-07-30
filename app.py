@@ -11,8 +11,8 @@ import sys
 
 # 导入我们自己的数据库模块
 from utils.database import TrafficDatabase
-# 导入图表生成器 (用于单独的图表路由)
-from utils.chart_generator import create_direction_pie_chart
+# 导入图表生成器
+from utils.chart_generator import create_direction_pie_chart, create_hourly_trend_chart
 
 # 创建Flask应用实例
 app = Flask(__name__)
@@ -136,17 +136,25 @@ def index():
         
         # 第8.5步：生成对应的图表
         try:
-            # 根据用户的搜索条件生成图表
-            chart_html = create_direction_pie_chart(
+            # 根据用户的搜索条件生成饼图
+            pie_chart_html = create_direction_pie_chart(
                 time_range=time_search if time_search and time_search.strip() else None
             )
             
+            # 生成24小时趋势图
+            trend_chart_html = create_hourly_trend_chart(
+                direction_filter=direction_search if direction_search and direction_search.strip() else None
+            )
+            
             if DEBUG_LOGS:
-                print(f"📊 为搜索条件生成图表，时间段: '{time_search}', 图表长度: {len(chart_html)} 字符")
+                print(f"📊 为搜索条件生成图表，时间段: '{time_search}', 方向: '{direction_search}'")
+                print(f"📊 饼图长度: {len(pie_chart_html)} 字符")
+                print(f"📈 趋势图长度: {len(trend_chart_html)} 字符")
                 
         except Exception as e:
             # 如果图表生成失败，提供一个错误提示
-            chart_html = f"<div class='alert alert-warning'>📊 图表暂时无法显示: {str(e)}</div>"
+            pie_chart_html = f"<div class='alert alert-warning'>📊 饼图暂时无法显示: {str(e)}</div>"
+            trend_chart_html = f"<div class='alert alert-warning'>📈 趋势图暂时无法显示: {str(e)}</div>"
             if DEBUG_LOGS:
                 print(f"❌ 图表生成失败: {e}")
         
@@ -169,7 +177,8 @@ def index():
                              direction_search=direction_search, # 当前方向筛选
                              search_info=search_info,          # 搜索状态描述
                              # 图表相关信息
-                             chart_html=chart_html)            # 生成的图表HTML
+                             pie_chart_html=pie_chart_html,    # 方向分布饼图
+                             trend_chart_html=trend_chart_html) # 24小时趋势图
         
     except Exception as e:
         return f"<h1>❌ 数据库连接错误</h1><p>错误信息: {str(e)}</p>"

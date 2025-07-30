@@ -73,8 +73,21 @@
     <!-- 数据可视化区域 -->
     <div class="chart-section">
         <h3>📊 数据可视化</h3>
-        <div class="chart-container">
-            {{ chart_html|safe }}
+        
+        <!-- 方向分布饼图 -->
+        <div class="chart-item">
+            <h4>🍰 方向分布统计</h4>
+            <div class="chart-container">
+                {{ pie_chart_html|safe }}
+            </div>
+        </div>
+        
+        <!-- 24小时趋势图 -->
+        <div class="chart-item">
+            <h4>📈 24小时车流量趋势</h4>
+            <div class="chart-container chart-wide">
+                {{ trend_chart_html|safe }}
+            </div>
         </div>
     </div>
 

@@ -460,3 +460,50 @@ table tbody tr:hover {
     align-items: center;
     justify-content: center;
 }
+
+/* 宽版图表容器（用于趋势图） */
+.chart-container.chart-wide {
+    min-height: 450px;
+    width: 100%;
+}
+
+/* ==================== 图表项目样式 ==================== */
+.chart-item {
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(200, 200, 200, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.chart-item h4 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 0.8rem;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    padding: 1rem 1.5rem 0.8rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .chart-container {
+        min-height: 300px;
+        padding: 0.5rem;
+    }
+    
+    .chart-container.chart-wide {
+        min-height: 350px;
+    }
+    
+    .chart-item {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
