@@ -8,6 +8,12 @@ import sqlite3
 import os
 from typing import List, Dict, Optional
 
+# 在作为模块运行时使用相对导入，作为脚本运行时使用绝对导入
+try:
+    from .constants import get_time_text, get_direction_text
+except ImportError:
+    from constants import get_time_text, get_direction_text
+
 class TrafficDatabase:
     """交通数据库管理类"""
     
@@ -173,18 +179,10 @@ class TrafficDatabase:
             # 生成搜索描述
             search_desc = []
             if time_range and time_range.strip():
-                time_map = {
-                    'morning': '早高峰 (07:00-09:00)',
-                    'noon': '中午时段 (11:00-13:00)', 
-                    'afternoon': '下午时段 (14:00-17:00)',
-                    'evening': '晚高峰 (17:00-19:00)',
-                    'night': '夜间时段 (20:00-06:00)'
-                }
-                time_text = time_map.get(time_range, f"时间段{time_range}")
+                time_text = get_time_text(time_range)
                 search_desc.append(f"时间段'{time_text}'")
             if direction_filter and direction_filter.strip():
-                direction_map = {'1': '北往南', '2': '南往北', '3': '东往西', '4': '西往东'}
-                direction_text = direction_map.get(direction_filter, f"方向{direction_filter}")
+                direction_text = get_direction_text(direction_filter)
                 search_desc.append(f"方向'{direction_text}'")
             
             if search_desc:
@@ -270,6 +268,93 @@ class TrafficDatabase:
             print(f"❌ 获取时间趋势数据失败: {e}")
             return {hour: 0 for hour in range(24)}
 
+    def get_hourly_traffic_trend_by_weekday(self, direction_filter: str = None) -> dict:
+        """
+        获取按工作日/周末区分的24小时车流量趋势数据（平均每小时）
+        
+        Args:
+            direction_filter: 方向筛选 ('1', '2', '3', '4')
+            
+        Returns:
+            dict: {
+                'weekday': {hour: avg_count_per_hour},   # 工作日平均每小时 (周一到周五)
+                'weekend': {hour: avg_count_per_hour}    # 周末平均每小时 (周六和周日)
+            }
+        """
+        try:
+            # 构建SQL查询，按小时和星期几统计车流量
+            # strftime('%w', datetime) 返回星期几：0=周日, 1=周一, ..., 6=周六
+            base_query = """
+                SELECT CAST(strftime('%H', datetime(time, 'unixepoch', 'localtime')) AS INTEGER) as hour,
+                       CAST(strftime('%w', datetime(time, 'unixepoch', 'localtime')) AS INTEGER) as weekday,
+                       COUNT(*) as count
+                FROM traffic
+            """
+            
+            # 添加方向筛选条件
+            conditions = []
+            params = []
+            
+            if direction_filter and direction_filter.strip():
+                conditions.append("direction = ?")
+                params.append(int(direction_filter))
+            
+            if conditions:
+                base_query += " WHERE " + " AND ".join(conditions)
+            
+            base_query += " GROUP BY hour, weekday ORDER BY hour, weekday"
+            
+            # 执行查询
+            cursor = self.connection.cursor()
+            cursor.execute(base_query, params)
+            results = cursor.fetchall()
+            
+            # 初始化数据结构
+            weekday_data = {hour: 0 for hour in range(24)}  # 工作日累计
+            weekend_data = {hour: 0 for hour in range(24)}  # 周末累计
+            
+            # 填充查询结果
+            for row in results:
+                hour, weekday, count = row
+                # weekday: 0=周日, 1=周一, 2=周二, 3=周三, 4=周四, 5=周五, 6=周六
+                # 工作日: 1-5 (周一到周五)
+                # 周末: 0,6 (周日和周六)
+                if weekday in [1, 2, 3, 4, 5]:  # 周一到周五
+                    weekday_data[hour] += count
+                elif weekday in [0, 6]:  # 周日和周六
+                    weekend_data[hour] += count
+            
+            # 计算平均值
+            # 工作日有5天，所以除以5
+            # 周末有2天，所以除以2
+            weekday_avg = {hour: count / 5 for hour, count in weekday_data.items()}
+            weekend_avg = {hour: count / 2 for hour, count in weekend_data.items()}
+            
+            weekday_total = sum(weekday_data.values())
+            weekend_total = sum(weekend_data.values())
+            weekday_avg_total = sum(weekday_avg.values())
+            weekend_avg_total = sum(weekend_avg.values())
+            
+            print(f"📈 获取周末/工作日平均趋势数据成功")
+            print(f"   工作日总计: {weekday_total} 条记录 (5天)")
+            print(f"   工作日平均每天: {weekday_total/5:.0f} 条记录")
+            print(f"   工作日平均每小时总和: {weekday_avg_total:.0f} 条记录")
+            print(f"   周末总计: {weekend_total} 条记录 (2天)")
+            print(f"   周末平均每天: {weekend_total/2:.0f} 条记录")
+            print(f"   周末平均每小时总和: {weekend_avg_total:.0f} 条记录")
+            
+            return {
+                'weekday': weekday_avg,
+                'weekend': weekend_avg
+            }
+            
+        except sqlite3.Error as e:
+            print(f"❌ 获取周末/工作日趋势数据失败: {e}")
+            return {
+                'weekday': {hour: 0 for hour in range(24)},
+                'weekend': {hour: 0 for hour in range(24)}
+            }
+
     def get_direction_distribution(self, time_range: Optional[str] = None) -> Dict[int, int]:
         """
         获取交通方向分布统计
@@ -314,12 +399,21 @@ class TrafficDatabase:
             print(f"❌ 查询方向分布失败: {e}")
             return {}
 
+# 返回数据库实例
+def get_database(db_path: str = None) -> TrafficDatabase:
+    if db_path is None:
+        # 默认数据库路径（相对于项目根目录）
+        current_dir = os.path.dirname(os.path.dirname(__file__))  # 回到项目根目录
+        db_path = os.path.join(current_dir, 'data', 'traffic.db')
+    
+    return TrafficDatabase(db_path)
+
 # 简单的测试函数
 def test_pagination():
     """测试分页功能的简单函数"""
     print("🧪 测试分页功能...")
     
-    db = TrafficDatabase()
+    db = get_database()
     if not db.connect():
         return False
     

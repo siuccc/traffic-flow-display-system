@@ -10,21 +10,17 @@ import os
 import sys
 
 # 导入我们自己的数据库模块
-from utils.database import TrafficDatabase
+from utils.database import get_database
 # 导入图表生成器
-from utils.chart_generator import create_direction_pie_chart, create_hourly_trend_chart
+from utils.chart_generator import create_direction_pie_chart, create_hourly_trend_chart, create_weekday_weekend_trend_chart
+# 导入常量
+from utils.constants import get_time_text, get_direction_text, DIRECTION_MAP
 
 # 创建Flask应用实例
 app = Flask(__name__)
 
 # 调试开关 - 控制是否显示详细日志
 DEBUG_LOGS = False  # 设为True可以看到详细日志
-
-# 初始化数据库连接
-def get_database():
-    """获取数据库实例"""
-    db_path = os.path.join(os.path.dirname(__file__), 'data', 'traffic.db')
-    return TrafficDatabase(db_path)
 
 @app.route('/')
 def index():
@@ -69,18 +65,10 @@ def index():
         # 生成搜索状态描述
         search_parts = []
         if time_search and time_search.strip():
-            time_map = {
-                'morning': '早高峰 (07:00-09:00)',
-                'noon': '中午时段 (11:00-13:00)', 
-                'afternoon': '下午时段 (14:00-17:00)',
-                'evening': '晚高峰 (17:00-19:00)',
-                'night': '夜间时段 (20:00-06:00)'
-            }
-            time_text = time_map.get(time_search, f"时间段{time_search}")
+            time_text = get_time_text(time_search)
             search_parts.append(f"时间段'{time_text}'")
         if direction_search and direction_search.strip():
-            direction_map = {'1': '北往南', '2': '南往北', '3': '东往西', '4': '西往东'}
-            direction_text = direction_map.get(direction_search, f"方向{direction_search}")
+            direction_text = get_direction_text(direction_search)
             search_parts.append(f"方向'{direction_text}'")
         
         if search_parts:
@@ -110,8 +98,7 @@ def index():
             record['formatted_time'] = beijing_time.strftime('%Y-%m-%d %H:%M:%S (北京时间)')
             
             # 将方向代码转换为文字
-            direction_map = {1: '北往南', 2: '南往北', 3: '东往西', 4: '西往东'}
-            record['direction_text'] = direction_map.get(record['direction'], '未知方向')
+            record['direction_text'] = get_direction_text(record['direction'])
         
         # 第7步：计算分页显示信息
         # 计算当前页显示的记录范围
@@ -146,15 +133,22 @@ def index():
                 direction_filter=direction_search if direction_search and direction_search.strip() else None
             )
             
+            # 生成工作日vs周末对比图
+            weekday_weekend_chart_html = create_weekday_weekend_trend_chart(
+                direction_filter=direction_search if direction_search and direction_search.strip() else None
+            )
+            
             if DEBUG_LOGS:
                 print(f"📊 为搜索条件生成图表，时间段: '{time_search}', 方向: '{direction_search}'")
                 print(f"📊 饼图长度: {len(pie_chart_html)} 字符")
                 print(f"📈 趋势图长度: {len(trend_chart_html)} 字符")
+                print(f"📈 工作日vs周末图长度: {len(weekday_weekend_chart_html)} 字符")
                 
         except Exception as e:
             # 如果图表生成失败，提供一个错误提示
             pie_chart_html = f"<div class='alert alert-warning'>📊 饼图暂时无法显示: {str(e)}</div>"
             trend_chart_html = f"<div class='alert alert-warning'>📈 趋势图暂时无法显示: {str(e)}</div>"
+            weekday_weekend_chart_html = f"<div class='alert alert-warning'>📈 工作日vs周末图暂时无法显示: {str(e)}</div>"
             if DEBUG_LOGS:
                 print(f"❌ 图表生成失败: {e}")
         
@@ -178,7 +172,8 @@ def index():
                              search_info=search_info,          # 搜索状态描述
                              # 图表相关信息
                              pie_chart_html=pie_chart_html,    # 方向分布饼图
-                             trend_chart_html=trend_chart_html) # 24小时趋势图
+                             trend_chart_html=trend_chart_html, # 24小时趋势图
+                             weekday_weekend_chart_html=weekday_weekend_chart_html) # 工作日vs周末对比图
         
     except Exception as e:
         return f"<h1>❌ 数据库连接错误</h1><p>错误信息: {str(e)}</p>"
