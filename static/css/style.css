@@ -360,6 +360,18 @@ table tbody tr:hover {
     border: 1px solid rgba(195, 207, 226, 0.3);
     min-width: 40px;
     text-align: center;
+    cursor: pointer;
+}
+
+/* 为按钮元素添加特定样式 */
+button.page-num {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+button.page-btn {
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .page-num:hover {
@@ -456,9 +468,8 @@ table tbody tr:hover {
     padding: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    overflow: hidden;
 }
 
 /* 宽版图表容器（用于趋势图） */
