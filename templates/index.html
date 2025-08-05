@@ -20,12 +20,12 @@
                     <select name="time_range" 
                             id="timeRangeSelect" 
                             class="search-input">
-                        <option value="" {% if not time_search %}selected{% endif %}>全部时间</option>
-                        <option value="morning" {% if time_search == 'morning' %}selected{% endif %}>早高峰 (07:00-09:00)</option>
-                        <option value="noon" {% if time_search == 'noon' %}selected{% endif %}>中午时段 (11:00-13:00)</option>
-                        <option value="afternoon" {% if time_search == 'afternoon' %}selected{% endif %}>下午时段 (14:00-17:00)</option>
-                        <option value="evening" {% if time_search == 'evening' %}selected{% endif %}>晚高峰 (17:00-19:00)</option>
-                        <option value="night" {% if time_search == 'night' %}selected{% endif %}>夜间时段 (20:00-06:00)</option>
+                        <option value="">全部时间</option>
+                        <option value="morning">早高峰 (07:00-09:00)</option>
+                        <option value="noon">中午时段 (11:00-13:00)</option>
+                        <option value="afternoon">下午时段 (14:00-17:00)</option>
+                        <option value="evening">晚高峰 (17:00-19:00)</option>
+                        <option value="night">夜间时段 (20:00-06:00)</option>
                     </select>
                     <label for="timeRangeSelect" class="input-label">时间段</label>
                 </div>
@@ -35,11 +35,11 @@
                     <select name="direction" 
                             id="directionSelect" 
                             class="search-input">
-                        <option value="" {% if not direction_search %}selected{% endif %}>全部方向</option>
-                        <option value="1" {% if direction_search == '1' %}selected{% endif %}>北往南</option>
-                        <option value="2" {% if direction_search == '2' %}selected{% endif %}>南往北</option>
-                        <option value="3" {% if direction_search == '3' %}selected{% endif %}>东往西</option>
-                        <option value="4" {% if direction_search == '4' %}selected{% endif %}>西往东</option>
+                        <option value="">全部方向</option>
+                        <option value="1">北往南</option>
+                        <option value="2">南往北</option>
+                        <option value="3">东往西</option>
+                        <option value="4">西往东</option>
                     </select>
                     <label for="directionSelect" class="input-label">行驶方向</label>
                 </div>
@@ -72,7 +72,7 @@
         <div class="chart-item">
             <h4>🍰 方向分布统计</h4>
             <div class="chart-container" id="pie-chart-container">
-                {{ pie_chart_html|safe }}
+                <div class="loading">📊 加载中...</div>
             </div>
         </div>
         
@@ -80,7 +80,7 @@
         <div class="chart-item">
             <h4>📈 24小时车流量趋势</h4>
             <div class="chart-container chart-wide" id="trend-chart">
-                {{ trend_chart_html|safe }}
+                <div class="loading">📈 加载中...</div>
             </div>
         </div>
         
@@ -88,7 +88,7 @@
         <div class="chart-item">
             <h4>📊 工作日vs周末流量对比</h4>
             <div class="chart-container chart-wide" id="weekday-weekend-chart">
-                {{ weekday_weekend_chart_html|safe }}
+                <div class="loading">📈 加载中...</div>
             </div>
         </div>
     </div>
@@ -97,54 +97,7 @@
     <div class="table-section">
         <h3>🚗 交通记录列表</h3>
         
-        {% if traffic_records %}
-        <table class="traffic-table" id="traffic-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>方向</th>
-                    <th>通过时间</th>
-                    <th>车牌号</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in traffic_records %}
-                <tr>
-                    <td class="center">{{ record.id }}</td>
-                    <td class="center direction-{{ record.direction }}">{{ record.direction_text }}</td>
-                    <td class="time">{{ record.formatted_time }}</td>
-                    <td class="center plate">{{ record.plate }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <!-- 分页导航 -->
-        <div class="pagination">
-            <!-- 上一页按钮 -->
-            <button class="page-btn prev-btn disabled" data-page="0">
-                ⬅️ 上一页
-            </button>
-            
-            <!-- 页码显示 -->
-            <div class="page-numbers">
-                <span class="page-num current">1</span>
-            </div>
-            
-            <!-- 页码跳转输入框 -->
-            <div class="page-jump">
-                <span class="jump-label">跳转到</span>
-                <input type="number" id="pageInput" class="page-input" min="1" max="1" placeholder="1">
-                <button onclick="jumpToPage()" class="jump-btn">GO</button>
-            </div>
-            
-            <!-- 下一页按钮 -->
-            <button class="page-btn next-btn disabled" data-page="0">
-                下一页 ➡️
-            </button>
-        </div>
-        
-        {% else %}
+        <!-- 统一的表格结构 (AJAX动态更新) -->
         <table class="traffic-table" id="traffic-table">
             <thead>
                 <tr>
@@ -162,9 +115,8 @@
                 </tr>
             </tbody>
         </table>
-        {% endif %}
         
-        <!-- 分页导航 (始终显示，通过AJAX动态更新) -->
+        <!-- 分页导航 (AJAX动态更新) -->
         <div class="pagination" id="pagination-container">
             <!-- 上一页按钮 -->
             <button class="page-btn prev-btn disabled">

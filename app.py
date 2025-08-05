@@ -6,8 +6,6 @@ Flask交通流量数据展示系统
 # 导入Flask相关模块
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime, timezone, timedelta
-import os
-import sys
 
 # 导入我们自己的数据库模块
 from utils.database import get_database
@@ -24,57 +22,9 @@ DEBUG_LOGS = True  # 设为True可以看到详细日志
 
 @app.route('/')
 def index():
-    """首页 - 基础模板，数据通过AJAX加载"""
-    return render_template('index.html',
-                         # 空数据，全部通过AJAX加载
-                         traffic_records=[],
-                         record_count=0,
-                         current_page=1,
-                         total_pages=0,
-                         total_records=0,
-                         start_record=0,
-                         end_record=0,
-                         has_prev=False,
-                         has_next=False,
-                         prev_page=None,
-                         next_page=None,
-                         time_search='',
-                         direction_search='',
-                         search_info='正在加载数据...',
-                         # AJAX图表占位符
-                         pie_chart_html='<div class="loading">📊 加载中...</div>',
-                         trend_chart_html='<div class="loading">📈 加载中...</div>',
-                         weekday_weekend_chart_html='<div class="loading">📈 加载中...</div>')
+    """首页 - AJAX应用基础模板"""
+    return render_template('index.html')
 
-@app.route('/chart')
-def chart():
-    """图表展示页面 - 重定向到API或返回图表配置"""
-    try:
-        # 第1步：获取URL参数
-        time_range = request.args.get('time_range', '', type=str)
-        
-        if DEBUG_LOGS:
-            print(f"📊 生成图表，时间段: '{time_range}'")
-        
-        # 第2步：使用AJAX数据生成功能
-        chart_data = create_pie_chart_data_for_ajax(time_range=time_range if time_range else None)
-        
-        # 第3步：返回JSON数据（可以被其他应用使用）
-        from flask import jsonify
-        return jsonify({
-            'success': True,
-            'chart_data': chart_data,
-            'message': f'图表数据生成成功，时间段: {time_range or "全部时间"}'
-        })
-        
-    except Exception as e:
-        from flask import jsonify
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'message': '图表数据生成失败'
-        }), 500
-    
 @app.route('/api/trend-chart')
 def api_trend_chart():
     """API接口 - 返回24小时趋势图数据（专门为AJAX请求设计）"""
@@ -91,7 +41,6 @@ def api_trend_chart():
         )
         
         # 返回JSON响应（包含图表数据）
-        from flask import jsonify
         return jsonify({
             'success': True,
             'chart_data': chart_data,
@@ -122,7 +71,6 @@ def api_pie_chart():
         )
         
         # 返回JSON响应（包含图表数据）
-        from flask import jsonify
         return jsonify({
             'success': True,
             'chart_data': chart_data,
@@ -152,7 +100,6 @@ def api_weekday_weekend_chart():
             direction_filter=direction_filter if direction_filter and direction_filter.strip() else None        #判断是否有数据输入
         )
         #返回json响应（包含图表数据）
-        from flask import jsonify
         return jsonify({
             'success': True,
             'chart_data': chart_data,

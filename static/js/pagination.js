@@ -212,38 +212,6 @@ function regeneratePaginationButtons(pagination) {
 }
 
 // 更新分页按钮状态
-function updatePaginationButtons(pagination) {
-    // 更新上一页按钮
-    const prevBtn = document.querySelector('.prev-btn');
-    if (prevBtn) {
-        if (pagination.has_prev) {
-            prevBtn.classList.remove('disabled');
-            prevBtn.setAttribute('data-page', pagination.prev_page);
-        } else {
-            prevBtn.classList.add('disabled');
-            prevBtn.removeAttribute('data-page');
-        }
-    }
-    
-    // 更新下一页按钮
-    const nextBtn = document.querySelector('.next-btn');
-    if (nextBtn) {
-        if (pagination.has_next) {
-            nextBtn.classList.remove('disabled');
-            nextBtn.setAttribute('data-page', pagination.next_page);
-        } else {
-            nextBtn.classList.add('disabled');
-            nextBtn.removeAttribute('data-page');
-        }
-    }
-    
-    // 更新当前页码显示
-    const currentPageSpan = document.querySelector('.page-num.current');
-    if (currentPageSpan) {
-        currentPageSpan.textContent = pagination.current_page;
-    }
-}
-
 // 更新搜索信息显示
 function updateSearchInfo(searchInfo, totalRecords, timeRange, direction) {
     // 更新下方的搜索信息

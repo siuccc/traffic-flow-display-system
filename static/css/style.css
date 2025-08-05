@@ -502,6 +502,17 @@ button.page-btn {
     border-radius: 12px 12px 0 0;
 }
 
+/* ==================== 加载状态样式 ==================== */
+.loading {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 2rem;
+    background: rgba(245, 247, 250, 0.8);
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .chart-container {
